@@ -31,7 +31,22 @@ public:
 
 private:
 	void Move(const FInputActionValue& Value);
+
 	void Lunge();
+
+	void Retreat();
+
+	void RotateArm(const FInputActionValue& Value);
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+		bool bIsLunge = false;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool bIsRetreat = false;
+
+	UPROPERTY(BlueprintReadOnly)
+		float ArmDeltaPitch;
 	
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -42,6 +57,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		UInputAction* LungeAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* ArmAction;
 	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* TempStaticMesh;
@@ -49,4 +67,12 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+		float ArmMaxClamp = 90.0f;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+		float ArmMinClamp = -90.0f;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+		float ArmSpeed = 10.0f;
 };

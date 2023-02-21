@@ -6,7 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 ABasicCharacter::ABasicCharacter()
@@ -52,12 +52,20 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	if(UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     	{
-    		////Binds
-    		//if(MoveHorizontalAction)
-    		//	InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
+    		//Binds
+    		if(MoveHorizontalAction)
+    			InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
 
 			if(LungeAction)
+			{
 				InputComp->BindAction(LungeAction, ETriggerEvent::Started, this, &ABasicCharacter::Lunge);
+				InputComp->BindAction(LungeAction, ETriggerEvent::Completed, this, &ABasicCharacter::Retreat);
+			}
+
+			if(ArmAction)
+			{
+				InputComp->BindAction(ArmAction, ETriggerEvent::Triggered, this, &ABasicCharacter::RotateArm);
+			}
     	}
 
 }
@@ -80,6 +88,21 @@ void ABasicCharacter::Move(const FInputActionValue& Value)
 
 void ABasicCharacter::Lunge()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Lunge"));
+	bIsLunge = true;
+	bIsRetreat = false;
+}
+
+void ABasicCharacter::Retreat()
+{
+	bIsRetreat = true;
+	bIsLunge = false;
+}
+
+void ABasicCharacter::RotateArm(const FInputActionValue& Value)
+{
+	float input = Value.Get<float>() * ArmSpeed;
+	
+	ArmDeltaPitch = FMath::Clamp(input + ArmDeltaPitch, ArmMinClamp, ArmMaxClamp);;
+	
 }
 

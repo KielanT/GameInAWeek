@@ -15,7 +15,12 @@ ASpawnerActor::ASpawnerActor()
 void ASpawnerActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if(Actor)
+	{
+		FActorSpawnParameters params;
+		AActor* ActorRef = GetWorld()->SpawnActor<AActor>(Actor, GetTransform(), params);
+	}
 }
 
 // Called every frame

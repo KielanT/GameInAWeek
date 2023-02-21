@@ -47,9 +47,6 @@ private:
 		UStaticMeshComponent* TempStaticMesh;
 
 	UPROPERTY(EditAnywhere)
-		class USpringArmComponent* SpringArmComponent;
-
-	UPROPERTY(EditAnywhere)
 		class UCameraComponent* CameraComponent;
 
 };

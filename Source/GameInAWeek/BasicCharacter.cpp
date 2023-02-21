@@ -19,12 +19,8 @@ ABasicCharacter::ABasicCharacter()
 	TempStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Temp Static Mesh"));
 	TempStaticMesh->SetupAttachment(GetCapsuleComponent());
 
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
-	SpringArmComponent->TargetArmLength = 300.0f;
-	SpringArmComponent->SetupAttachment(GetCapsuleComponent());
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->SetupAttachment(GetCapsuleComponent());
 	
 }
 
@@ -56,9 +52,9 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	if(UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     	{
-    		//Binds
-    		if(MoveHorizontalAction)
-    			InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
+    		////Binds
+    		//if(MoveHorizontalAction)
+    		//	InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
 
 			if(LungeAction)
 				InputComp->BindAction(LungeAction, ETriggerEvent::Started, this, &ABasicCharacter::Lunge);
@@ -68,15 +64,17 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ABasicCharacter::Move(const FInputActionValue& Value)
 {
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	float MovementVector = Value.Get<float>();
 
 	if (Controller != nullptr)
 	{
+		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(RightDirection, MovementVector.X);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		
+		AddMovementInput(Direction, MovementVector);
 	}
 }
 

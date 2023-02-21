@@ -59,6 +59,9 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
     		//Binds
     		if(MoveHorizontalAction)
     			InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
+
+			if(LungeAction)
+				InputComp->BindAction(LungeAction, ETriggerEvent::Completed, this, &ABasicCharacter::Lunge);
     	}
 
 }
@@ -69,15 +72,16 @@ void ABasicCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
-		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-		
-	
-		// get right vector 
+
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+}
+
+void ABasicCharacter::Lunge()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Lunge"));
 }
 

@@ -31,6 +31,7 @@ public:
 
 private:
 	void Move(const FInputActionValue& Value);
+	void Lunge();
 	
 private:
 	UPROPERTY(EditAnywhere, Category = Input)
@@ -38,6 +39,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputAction* MoveHorizontalAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+		UInputAction* LungeAction;
 	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* TempStaticMesh;

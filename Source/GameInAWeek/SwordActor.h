@@ -27,14 +27,9 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
-
-	//UPROPERTY(EditAnywhere, Category = Sword)
-	//	FString Key = "Foil";
-
 	
 	UPROPERTY(EditAnywhere, Category = Sword)
 		ESwordTypes Key;
-	
 	
 	UPROPERTY(EditAnywhere, Category = Sword)
 		TMap<ESwordTypes, UStaticMesh*> SwordMap;

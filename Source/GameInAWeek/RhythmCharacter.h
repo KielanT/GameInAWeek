@@ -15,6 +15,8 @@ enum class ELungeState
 	LowLunge
 };
 
+class ASwordActor;
+
 UCLASS()
 class GAMEINAWEEK_API ARhythmCharacter : public ACharacter
 {
@@ -44,6 +46,8 @@ private:
 
 	void ResetLunge();
 
+	void SpawnSword();
+
 private:
 	ELungeState LungeState;
 
@@ -70,4 +74,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Animation)
 		UAnimMontage* LungeHighMontage;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ASwordActor> SwordActorClass;
+
+	UPROPERTY()
+		ASwordActor* SwordActor;
 };

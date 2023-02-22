@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "SwordActor.h"
 
 // Sets default values
 ABasicCharacter::ABasicCharacter()
@@ -18,7 +19,6 @@ ABasicCharacter::ABasicCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(GetCapsuleComponent());
-	
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +33,10 @@ void ABasicCharacter::BeginPlay()
 			SubsystemInterface->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	
+	//Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("LeftHand"));
+	SpawnSword();
+	
 }
 
 // Called every frame
@@ -101,5 +105,20 @@ void ABasicCharacter::RotateArm(const FInputActionValue& Value)
 	
 	ArmDeltaPitch = FMath::Clamp(input + ArmDeltaPitch, ArmMinClamp, ArmMaxClamp);;
 	
+}
+
+void ABasicCharacter::SpawnSword()
+{
+	if(SwordActorClass)
+	{
+		FActorSpawnParameters Params;
+		FAttachmentTransformRules Rules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+		//Rules.LocationRule = EAttachmentRule::SnapToTarget;
+		Rules.RotationRule = EAttachmentRule::KeepWorld;
+		//Rules.ScaleRule = EAttachmentRule::SnapToTarget;
+		
+		SwordActor = GetWorld()->SpawnActor<ASwordActor>(SwordActorClass, GetTransform(), Params);
+		SwordActor->AttachToComponent(GetMesh(), Rules, FName("WeaponSocket"));
+	}
 }
 

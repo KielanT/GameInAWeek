@@ -8,7 +8,7 @@
 #include "BasicCharacter.generated.h"
 
 
-
+class ASwordActor;
 UCLASS()
 class GAMEINAWEEK_API ABasicCharacter : public ACharacter
 {
@@ -38,6 +38,8 @@ private:
 
 	void RotateArm(const FInputActionValue& Value);
 
+	void SpawnSword();
+
 public:
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsLunge = false;
@@ -49,6 +51,9 @@ public:
 		float ArmDeltaPitch;
 	
 private:
+	//UPROPERTY(EditAnywhere)
+	//	UStaticMeshComponent* Sword;
+	
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputMappingContext* DefaultMappingContext;
 
@@ -72,4 +77,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		float ArmSpeed = 10.0f;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ASwordActor> SwordActorClass;
+
+	UPROPERTY()
+		ASwordActor* SwordActor;
 };

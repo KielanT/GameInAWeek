@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "SwordActor.h"
 
 // Sets default values
 ARhythmCharacter::ARhythmCharacter()
@@ -30,7 +31,7 @@ void ARhythmCharacter::BeginPlay()
 			SubsystemInterface->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+	SpawnSword();
 	LungeState = ELungeState::Lunge;
 }
 
@@ -99,6 +100,21 @@ void ARhythmCharacter::HighLunge()
 void ARhythmCharacter::ResetLunge()
 {
 	LungeState = ELungeState::Lunge;
+}
+
+void ARhythmCharacter::SpawnSword()
+{
+	if(SwordActorClass)
+	{
+		FActorSpawnParameters Params;
+		FAttachmentTransformRules Rules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
+		//Rules.LocationRule = EAttachmentRule::SnapToTarget;
+		Rules.RotationRule = EAttachmentRule::KeepWorld;
+		//Rules.ScaleRule = EAttachmentRule::SnapToTarget;
+		
+		SwordActor = GetWorld()->SpawnActor<ASwordActor>(SwordActorClass, GetTransform(), Params);
+		SwordActor->AttachToComponent(GetMesh(), Rules, FName("WeaponSocket"));
+	}
 }
 
 

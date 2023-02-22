@@ -59,10 +59,7 @@ private:
 		UInputAction* LungeAction;
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	UInputAction* ArmAction;
-	
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* TempStaticMesh;
+		UInputAction* ArmAction;
 
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* CameraComponent;

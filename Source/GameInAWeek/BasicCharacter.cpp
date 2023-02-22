@@ -16,9 +16,6 @@ ABasicCharacter::ABasicCharacter()
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	TempStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Temp Static Mesh"));
-	TempStaticMesh->SetupAttachment(GetCapsuleComponent());
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(GetCapsuleComponent());
 	

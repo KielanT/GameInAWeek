@@ -24,17 +24,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
 	UFUNCTION()
-		void OnBeginOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,
-			bool bFromSweep, const FHitResult & SweepResult);
+		void SetSpeed(float speed);
 	
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY(EditAnywhere)
-		UBoxComponent* CollisionBox;
+	UPROPERTY()
+		FVector Velocity = FVector(-10.0f, 0.0f, 0.0f);
 
-	
+	UPROPERTY()
+		float Speed = 0;
 };

@@ -24,6 +24,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	void SpawnActor();
+	
+private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> Actor;
+
+	float Spawner = 0;
+	float MaxSpawnTime = 1.0f/ 1.60f;
 };

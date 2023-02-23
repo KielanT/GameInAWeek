@@ -3,6 +3,7 @@
 #include "GameInAWeekGameMode.h"
 #include "GameInAWeekCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Blueprint/UserWidget.h"
 
 AGameInAWeekGameMode::AGameInAWeekGameMode()
 {
@@ -11,5 +12,29 @@ AGameInAWeekGameMode::AGameInAWeekGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
+
+void AGameInAWeekGameMode::IncreaseScore(int score)
+{
+	CurrentScore += score;
+}
+
+int AGameInAWeekGameMode::GetScore()
+{
+	return CurrentScore;
+}
+
+void AGameInAWeekGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if(BasicHUDClass)
+	{
+		Widget = CreateWidget<UUserWidget>(GetWorld(), BasicHUDClass);
+		if(Widget)
+		{
+			Widget->AddToViewport();
+		}
 	}
 }

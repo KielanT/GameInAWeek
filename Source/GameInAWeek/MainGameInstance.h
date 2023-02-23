@@ -17,5 +17,5 @@ class GAMEINAWEEK_API UMainGameInstance : public UGameInstance
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		ESwordTypes SwordTypes;
+		ESwordTypes SwordTypes = ESwordTypes::Foil;
 };

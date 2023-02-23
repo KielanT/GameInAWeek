@@ -3,6 +3,8 @@
 
 #include "SpawnerActor.h"
 
+#include "FallingActor.h"
+
 // Sets default values
 ASpawnerActor::ASpawnerActor()
 {
@@ -16,17 +18,28 @@ void ASpawnerActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(Actor)
-	{
-		FActorSpawnParameters params;
-		AActor* ActorRef = GetWorld()->SpawnActor<AActor>(Actor, GetTransform(), params);
-	}
+	
 }
 
 // Called every frame
 void ASpawnerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	Spawner += DeltaTime;
+	if(Spawner >= MaxSpawnTime)
+	{
+		SpawnActor();
+		Spawner = 0;
+	}
+}
 
+void ASpawnerActor::SpawnActor()
+{
+	if(Actor)
+	{
+		FActorSpawnParameters params;
+		AFallingActor* ActorRef = GetWorld()->SpawnActor<AFallingActor>(Actor, GetTransform(), params);
+		ActorRef->SetSpeed(40.0f);
+	}
 }
 

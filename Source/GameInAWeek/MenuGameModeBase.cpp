@@ -16,6 +16,10 @@ void AMenuGameModeBase::BeginPlay()
 	{
 		Widget = CreateWidget<UUserWidget>(GetWorld(), MenuClass);
 		if(Widget)
+		{
 			Widget->AddToViewport();
+			GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
+			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+		}
 	}
 }

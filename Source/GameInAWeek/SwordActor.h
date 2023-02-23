@@ -25,6 +25,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,
+			bool bFromSweep, const FHitResult & SweepResult);
+
+private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 	
@@ -37,4 +42,9 @@ private:
 	UPROPERTY()
 		UStaticMesh* SelectedMesh;
 
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* CollisionBox;
+
+	UPROPERTY()
+		class AGameInAWeekGameMode* GameMode;
 };

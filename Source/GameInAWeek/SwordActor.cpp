@@ -2,8 +2,10 @@
 
 
 #include "SwordActor.h"
-
+#include "Components/BoxComponent.h"
 #include "MainGameInstance.h"
+#include "GameInAWeekGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASwordActor::ASwordActor()
@@ -13,6 +15,10 @@ ASwordActor::ASwordActor()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
 	SetRootComponent(StaticMeshComponent);
+
+	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+	CollisionBox->SetupAttachment(StaticMeshComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -20,8 +26,9 @@ void ASwordActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance());
-	if(GameInstance)
+	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	
+	if(UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance()))
 	{
 		Key = GameInstance->SwordTypes;
 	}
@@ -34,7 +41,11 @@ void ASwordActor::BeginPlay()
 	}
 	
 	if(SelectedMesh)
+	{
 		StaticMeshComponent->SetStaticMesh(SelectedMesh);
+	}
+
+	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwordActor::OnBeginOverlap);
 }
 
 // Called every frame
@@ -42,5 +53,15 @@ void ASwordActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASwordActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor->ActorHasTag(TEXT("Object")))
+	{
+		OtherActor->Destroy();
+		GameMode->IncreaseScore(10);
+	}
 }
 

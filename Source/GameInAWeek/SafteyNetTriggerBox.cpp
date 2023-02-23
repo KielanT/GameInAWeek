@@ -18,9 +18,9 @@ void ASafteyNetTriggerBox::BeginPlay()
 void ASafteyNetTriggerBox::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Collision"));
-	if(OverlappedActor->GetClass() == TSubclassOf<AFallingActor>())
+	if(OtherActor->GetClass()->IsChildOf(AFallingActor::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Collision"));
-		OverlappedActor->Destroy();
+		UE_LOG(LogTemp, Warning, TEXT("Actor COl"));
+		OtherActor->Destroy();
 	}
 }

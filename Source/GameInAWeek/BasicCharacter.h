@@ -51,8 +51,8 @@ public:
 		float ArmDeltaPitch;
 	
 private:
-	//UPROPERTY(EditAnywhere)
-	//	UStaticMeshComponent* Sword;
+	UPROPERTY(EditAnywhere, Category = Animation)
+		UAnimMontage* LungeMontage;
 	
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputMappingContext* DefaultMappingContext;

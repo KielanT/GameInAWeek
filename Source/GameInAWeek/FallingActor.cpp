@@ -19,6 +19,7 @@ AFallingActor::AFallingActor()
 void AFallingActor::BeginPlay()
 {
 	Super::BeginPlay();
+	StaticMeshComponent->SetEnableGravity(false);
 	
 }
 
@@ -33,7 +34,12 @@ void AFallingActor::Tick(float DeltaTime)
 
 void AFallingActor::SetSpeed(float speed)
 {
-	
+	Speed = speed;
+}
+
+void AFallingActor::EnableGravity()
+{
+	StaticMeshComponent->SetEnableGravity(true);
 }
 
 

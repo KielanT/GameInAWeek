@@ -26,6 +26,8 @@ public:
 
 	UFUNCTION()
 		void SetSpeed(float speed);
+
+	void EnableGravity();
 	
 private:
 	UPROPERTY(EditAnywhere)

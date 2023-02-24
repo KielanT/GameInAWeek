@@ -28,14 +28,16 @@ void ABasicCharacter::BeginPlay()
 	
 	if(APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
+		PlayerController->SetInputMode(FInputModeGameOnly());
+		PlayerController->bShowMouseCursor = false;
+		
 		if(UEnhancedInputLocalPlayerSubsystem* SubsystemInterface = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			SubsystemInterface->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
-	//Sword->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("LeftHand"));
 	SpawnSword();
+	
 	
 }
 
@@ -89,6 +91,9 @@ void ABasicCharacter::Move(const FInputActionValue& Value)
 
 void ABasicCharacter::Lunge()
 {
+	if(LungeMontage)
+		PlayAnimMontage(LungeMontage);
+		
 	bIsLunge = true;
 	bIsRetreat = false;
 }

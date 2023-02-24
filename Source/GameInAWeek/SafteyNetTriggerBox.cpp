@@ -17,10 +17,10 @@ void ASafteyNetTriggerBox::BeginPlay()
 
 void ASafteyNetTriggerBox::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Collision"));
 	if(OtherActor->GetClass()->IsChildOf(AFallingActor::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor COl"));
+		AFallingActor* actor = Cast<AFallingActor>(OtherActor);
+		//actor->EnableGravity();
 		OtherActor->Destroy();
 	}
 }

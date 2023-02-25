@@ -42,7 +42,8 @@ private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 
-	
+	UPROPERTY()
+		class AGameInAWeekGameMode* GameMode;
 
 	UPROPERTY(EditAnywhere)
 		FVector MovementDirection = FVector(-1.0f, 0.0f, 0.0f);
@@ -57,7 +58,13 @@ private:
 		TArray<UStaticMesh*> BallMeshes;
 
 	UPROPERTY(EditAnywhere)
+		TArray<int> Scores; // The scores should match the meshes;
+
+	UPROPERTY(EditAnywhere)
 		UStaticMesh* BallMesh;
+
+	UPROPERTY()
+		int Score;
 
 	UPROPERTY()
 		bool IsHit;
@@ -69,7 +76,7 @@ private:
 		FTimerHandle DeathTimerHandle;
 
 	UPROPERTY(EditAnywhere)
-		float DeathTime = 4.0f;
+		float DeathTime = 2.0f;
 	
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* AudioComponent;
@@ -77,6 +84,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Audio)
 		TArray<USoundBase*> HitSounds;
 
+	UPROPERTY(EditAnywhere, Category = Audio)
+		USoundBase* MissedSound;
+	
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> DestructionMesh;
 };

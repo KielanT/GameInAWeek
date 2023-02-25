@@ -6,7 +6,6 @@
 #include "FallingActor.h"
 #include "Components/BoxComponent.h"
 #include "MainGameInstance.h"
-#include "GameInAWeekGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -28,7 +27,6 @@ void ASwordActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	
 	if(UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance()))
 	{
@@ -74,7 +72,6 @@ void ASwordActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* 
 			OtherActor->Destroy();
 		}
 		
-		GameMode->IncreaseScore(10);
 	}
 }
 

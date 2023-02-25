@@ -45,6 +45,5 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* CollisionBox;
 
-	UPROPERTY()
-		class AGameInAWeekGameMode* GameMode;
+	
 };

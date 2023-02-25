@@ -30,27 +30,21 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	void Move(const FInputActionValue& Value);
-
+	
 	void Lunge();
-
-	void Retreat();
 
 	void RotateArm(const FInputActionValue& Value);
 
 	void SpawnSword();
 
 public:
-	UPROPERTY(BlueprintReadWrite)
-		bool bIsLunge = false;
-
-	UPROPERTY(BlueprintReadWrite)
-		bool bIsRetreat = false;
-
 	UPROPERTY(BlueprintReadOnly)
 		float ArmDeltaPitch;
 	
 private:
+	UPROPERTY()
+		class AGameInAWeekGameMode* GameModeRef;
+	
 	UPROPERTY(EditAnywhere, Category = Animation)
 		UAnimMontage* LungeMontage;
 	
@@ -59,6 +53,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputAction* MoveHorizontalAction;
+	
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		UInputAction* LungeAction;
@@ -86,4 +81,7 @@ private:
 
 	UPROPERTY()
 		FRotator StartingRotation;
+
+	bool bIsActive;
+
 };

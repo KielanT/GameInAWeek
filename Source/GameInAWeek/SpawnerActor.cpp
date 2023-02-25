@@ -4,6 +4,8 @@
 #include "SpawnerActor.h"
 
 #include "FallingActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameInAWeekGameMode.h"
 
 // Sets default values
 ASpawnerActor::ASpawnerActor()
@@ -27,20 +29,53 @@ void ASpawnerActor::BeginPlay()
 {
 	Super::BeginPlay();
 	SpawnRate = FMath::RandRange(0.1f, 1.0f);
-	
-	
+	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	SpawnRateMin = 0.8f;
+	SpawnRateMax = 1.6f;
+	GameTimerRate = 15;
 }
 
 // Called every frame
 void ASpawnerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SpawnerTime += DeltaTime;
-	if(SpawnerTime >= SpawnRate)
+	if(GameMode->IsPlaying())
 	{
-		SpawnActor();
-		SpawnerTime = 0.0f; // Reset timer
-		SpawnRate = FMath::RandRange(0.8f, 1.6f);
+		GameTimer += DeltaTime;
+		SpawnerTime += DeltaTime;
+		if(SpawnerTime >= SpawnRate)
+		{
+			SpawnActor();
+			SpawnerTime = 0.0f; // Reset timer
+			SpawnRate = FMath::RandRange(SpawnRateMin, SpawnRateMax);
+		}
+		if(GameTimer >= GameTimerRate)
+		{
+			GameTimer = 0;
+			if(GameTimerRate <= 3)
+			{
+				GameTimerRate = 3;
+			}else
+			{
+				GameTimerRate -= 2;
+			}
+			
+			if(SpawnRateMin >= 0.1f)
+			{
+				SpawnRateMin = SpawnRateMin - 0.1f;
+			}else
+			{
+				SpawnRateMin = 0.1f;
+			}
+			
+			if(SpawnRateMax >= 0.1f)
+			{
+				SpawnRateMax = SpawnRateMax - 0.1f;
+			}else
+			{
+				SpawnRateMax = 0.1f;
+			}
+		}
 	}
 }
 

@@ -5,7 +5,8 @@
 
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "GameInAWeekGameMode.h"
 
 // Sets default values
 AFallingActor::AFallingActor()
@@ -24,12 +25,23 @@ AFallingActor::AFallingActor()
 void AFallingActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if(!BallMeshes.IsEmpty())
 	{
 		const int index = FMath::RandRange(0, BallMeshes.Num() - 1);
 		BallMesh = BallMeshes[index];
 		StaticMeshComponent->SetStaticMesh(BallMesh);
 		BallMeshes.Empty(); // Destroys the other meshes
+
+		if(!Scores.IsEmpty())
+		{
+			Score = Scores[index];
+		}
+		else
+		{
+			Score = 10;
+		}
 	}
 
 	StaticMeshComponent->SetStaticMesh(BallMesh);
@@ -46,6 +58,7 @@ void AFallingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 	if(!IsHit || !IsMissed)
 	{
 		FVector Translation = MovementDirection * Speed * DeltaTime;
@@ -72,13 +85,19 @@ void AFallingActor::Hit()
 			AudioComponent->SetSound(Sound);
 			AudioComponent->Play();
 		}
-		
+		if(!IsHit)
+		{
+			GameMode->IncreaseScore(Score);
+			GameMode->Missed(false);
+			StaticMeshComponent->SetEnableGravity(true);
+			StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
+		}
 		
 		IsHit = true;
-		StaticMeshComponent->SetEnableGravity(true);
-		StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
+		
+		
 	}
-	//GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, this, &AFallingActor::Death, DeathTime, false);
+	
 	
 }
 
@@ -87,7 +106,23 @@ void AFallingActor::Missed()
 	IsMissed = true;
 	StaticMeshComponent->SetEnableGravity(true);
 	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	SwapMeshes();
+
+	if(!AudioComponent->IsPlaying())
+	{
+		if(MissedSound)
+		{
+			AudioComponent->SetSound(MissedSound);
+			AudioComponent->Play();
+		}
+	}
+	
+	if(!IsHit)
+	{
+		SwapMeshes();
+		GameMode->Missed(true);
+	}
+		GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, this, &AFallingActor::Death, DeathTime, false);
+	
 }
 
 void AFallingActor::Death()

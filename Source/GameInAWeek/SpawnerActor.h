@@ -41,8 +41,14 @@ private:
 	UPROPERTY(EditAnywhere)
 		USceneComponent* MaxSpawn;
 
-
+	UPROPERTY()
+		class AGameInAWeekGameMode* GameMode;
 	
 	float SpawnerTime = 0;
 	float SpawnRate = 1.0f;
+	float SpawnRateMin;
+	float SpawnRateMax;
+
+	float GameTimer = 0;
+	float GameTimerRate;
 };

@@ -8,6 +8,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "SwordActor.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameInAWeekGameMode.h"
+
 
 // Sets default values
 ABasicCharacter::ABasicCharacter()
@@ -25,11 +28,11 @@ ABasicCharacter::ABasicCharacter()
 void ABasicCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GameModeRef = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		
 	if(APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		PlayerController->SetInputMode(FInputModeGameOnly());
-		PlayerController->bShowMouseCursor = false;
 		
 		if(UEnhancedInputLocalPlayerSubsystem* SubsystemInterface = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -46,12 +49,7 @@ void ABasicCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(GetActorRotation() != StartingRotation)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Rotated %s"), *GetActorRotation().ToString());
-		SetActorRotation(StartingRotation);
-	}
-	
+	bIsActive = GameModeRef->IsPlaying();
 	
 }
 
@@ -62,14 +60,9 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	if(UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     	{
-    		//Binds
-    		//if(MoveHorizontalAction)
-    		//	InputComp->BindAction(MoveHorizontalAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Move);
-
 			if(LungeAction)
 			{
-				InputComp->BindAction(LungeAction, ETriggerEvent::Started, this, &ABasicCharacter::Lunge);
-				InputComp->BindAction(LungeAction, ETriggerEvent::Completed, this, &ABasicCharacter::Retreat);
+				InputComp->BindAction(LungeAction, ETriggerEvent::Triggered, this, &ABasicCharacter::Lunge);
 			}
 
 			if(ArmAction)
@@ -80,43 +73,27 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 }
 
-void ABasicCharacter::Move(const FInputActionValue& Value)
-{
-	float MovementVector = Value.Get<float>();
-
-	if (Controller != nullptr)
-	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		
-		AddMovementInput(Direction, MovementVector);
-	}
-}
 
 void ABasicCharacter::Lunge()
 {
-	if(LungeMontage)
-		PlayAnimMontage(LungeMontage);
-		
-	bIsLunge = true;
-	bIsRetreat = false;
+	if(bIsActive)
+	{
+		if(LungeMontage && GetCurrentMontage() != LungeMontage) // Detecting the montage playing stops the player spamming
+		{
+			PlayAnimMontage(LungeMontage);
+		}
+	}
 }
 
-void ABasicCharacter::Retreat()
-{
-	bIsRetreat = true;
-	bIsLunge = false;
-}
 
 void ABasicCharacter::RotateArm(const FInputActionValue& Value)
 {
-	float input = Value.Get<float>() * ArmSpeed;
+	if(bIsActive)
+	{
+		float input = Value.Get<float>() * ArmSpeed;
 	
-	ArmDeltaPitch = FMath::Clamp(input + ArmDeltaPitch, ArmMinClamp, ArmMaxClamp);;
-	
+		ArmDeltaPitch = FMath::Clamp(input + ArmDeltaPitch, ArmMinClamp, ArmMaxClamp);;
+	}
 }
 
 void ABasicCharacter::SpawnSword()

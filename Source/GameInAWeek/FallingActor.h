@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "FallingActor.generated.h"
 
 class UBoxComponent;
@@ -26,16 +27,56 @@ public:
 
 	UFUNCTION()
 		void SetSpeed(float speed);
+	
+	void Hit();
+	void Missed();
+	
+	
+private:
+	UFUNCTION()
+		void Death();
 
-	void EnableGravity();
+	void SwapMeshes();
 	
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 
-	UPROPERTY()
-		FVector Velocity = FVector(-10.0f, 0.0f, 0.0f);
+	
+
+	UPROPERTY(EditAnywhere)
+		FVector MovementDirection = FVector(-1.0f, 0.0f, 0.0f);
+
+	UPROPERTY(EditAnywhere)
+		FRotator RotationDirection = FRotator(1.0f, 0.0f, 0.0f);
 
 	UPROPERTY()
 		float Speed = 0;
+
+	UPROPERTY(EditAnywhere)
+		TArray<UStaticMesh*> BallMeshes;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMesh* BallMesh;
+
+	UPROPERTY()
+		bool IsHit;
+
+	UPROPERTY()
+		bool IsMissed;
+
+	UPROPERTY()
+		FTimerHandle DeathTimerHandle;
+
+	UPROPERTY(EditAnywhere)
+		float DeathTime = 4.0f;
+	
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* AudioComponent;
+
+	UPROPERTY(EditAnywhere, Category = Audio)
+		TArray<USoundBase*> HitSounds;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> DestructionMesh;
 };

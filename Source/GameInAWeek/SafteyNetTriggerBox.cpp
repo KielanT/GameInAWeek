@@ -19,8 +19,14 @@ void ASafteyNetTriggerBox::OnOverlapBegin(AActor* OverlappedActor, AActor* Other
 {
 	if(OtherActor->GetClass()->IsChildOf(AFallingActor::StaticClass()))
 	{
-		AFallingActor* actor = Cast<AFallingActor>(OtherActor);
-		//actor->EnableGravity();
-		OtherActor->Destroy();
+		AFallingActor* Actor = Cast<AFallingActor>(OtherActor);
+		if(Actor)
+		{
+			Actor->Missed();
+		}
+		else
+		{
+			OtherActor->Destroy();
+		}
 	}
 }

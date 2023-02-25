@@ -2,6 +2,8 @@
 
 
 #include "SwordActor.h"
+
+#include "FallingActor.h"
 #include "Components/BoxComponent.h"
 #include "MainGameInstance.h"
 #include "GameInAWeekGameMode.h"
@@ -60,7 +62,18 @@ void ASwordActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* 
 {
 	if(OtherActor->ActorHasTag(TEXT("Object")))
 	{
-		OtherActor->Destroy();
+		
+		AFallingActor* Actor = Cast<AFallingActor>(OtherActor);
+		
+		if(Actor)
+		{
+			Actor->Hit();
+		}
+		else
+		{
+			OtherActor->Destroy();
+		}
+		
 		GameMode->IncreaseScore(10);
 	}
 }

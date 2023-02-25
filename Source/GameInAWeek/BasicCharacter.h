@@ -83,4 +83,7 @@ private:
 
 	UPROPERTY()
 		ASwordActor* SwordActor;
+
+	UPROPERTY()
+		FRotator StartingRotation;
 };

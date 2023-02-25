@@ -25,11 +25,24 @@ public:
 
 private:
 	void SpawnActor();
+
+	FTransform SelectSpawnPoint();
 	
 private:
 	UPROPERTY(EditAnywhere)
+		USceneComponent* Root;
+	
+	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> Actor;
 
-	float Spawner = 0;
-	float MaxSpawnTime = 1.0f/ 1.60f;
+	UPROPERTY(EditAnywhere)
+		USceneComponent* MinSpawn;
+		
+	UPROPERTY(EditAnywhere)
+		USceneComponent* MaxSpawn;
+
+
+	
+	float SpawnerTime = 0;
+	float SpawnRate = 1.0f;
 };

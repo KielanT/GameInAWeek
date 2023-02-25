@@ -13,7 +13,7 @@
 ABasicCharacter::ABasicCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -38,7 +38,7 @@ void ABasicCharacter::BeginPlay()
 	}
 	SpawnSword();
 	
-	
+	StartingRotation = GetActorRotation();
 }
 
 // Called every frame
@@ -46,6 +46,13 @@ void ABasicCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(GetActorRotation() != StartingRotation)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Rotated %s"), *GetActorRotation().ToString());
+		SetActorRotation(StartingRotation);
+	}
+	
+	
 }
 
 // Called to bind functionality to input

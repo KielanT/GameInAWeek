@@ -72,17 +72,17 @@ void ARhythmCharacter::Lunge()
 {
 	if(LungeState == ELungeState::Lunge)
 	{
-		if(LungeMontage)
+		if(LungeMontage && GetCurrentMontage() != LungeMontage)
 			PlayAnimMontage(LungeMontage);
 	}
 	else if(LungeState == ELungeState::LowLunge)
 	{
-		if(LungeLowMontage)
+		if(LungeLowMontage && GetCurrentMontage() != LungeLowMontage)
 			PlayAnimMontage(LungeLowMontage);
 	}
 	else if(LungeState == ELungeState::HighLunge)
 	{
-		if(LungeHighMontage)
+		if(LungeHighMontage && GetCurrentMontage() != LungeHighMontage)
 			PlayAnimMontage(LungeHighMontage);
 	}
 }

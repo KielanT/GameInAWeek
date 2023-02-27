@@ -58,14 +58,16 @@ void AFallingActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
-	if(!IsHit || !IsMissed)
+	if(GameMode->IsPlaying())
 	{
-		FVector Translation = MovementDirection * Speed * DeltaTime;
-		AddActorWorldOffset(Translation);
+		if(!IsHit || !IsMissed)
+		{
+			FVector Translation = MovementDirection * Speed * DeltaTime;
+			AddActorWorldOffset(Translation);
 
-		FRotator Rotator = RotationDirection * Speed * DeltaTime;
-		AddActorWorldRotation(Rotator);
+			FRotator Rotator = RotationDirection * Speed * DeltaTime;
+			AddActorWorldRotation(Rotator);
+		}
 	}
 }
 

@@ -26,6 +26,9 @@ public:
 
 private:
 
+	UPROPERTY()
+		class ARhythmGameModeBase* GameModeRef;
+	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* Mesh;
 

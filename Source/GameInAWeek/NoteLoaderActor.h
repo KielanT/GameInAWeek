@@ -23,9 +23,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* Mesh;
+	// UPROPERTY(EditAnywhere)
+	// 	UStaticMeshComponent* Mesh;
 
+	UPROPERTY()
+		class ARhythmGameModeBase* GameModeRef;
+	
 	UPROPERTY()	
 		class ASongActor* OwningActor; 
 

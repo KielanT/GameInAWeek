@@ -3,7 +3,9 @@
 
 #include "NoteLoaderActor.h"
 
+#include "RhythmGameModeBase.h"
 #include "SongActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ANoteLoaderActor::ANoteLoaderActor()
@@ -18,6 +20,7 @@ void ANoteLoaderActor::BeginPlay()
 {
 	Super::BeginPlay();
 	OwningActor = Cast<ASongActor>(GetOwner());
+	GameModeRef = Cast<ARhythmGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 // Called every frame
@@ -28,9 +31,9 @@ void ANoteLoaderActor::Tick(float DeltaTime)
 
 	if(OwningActor)
 	{
-		FVector Translation = -FVector::XAxisVector;
-		Translation.X *= OwningActor->GetSongPosition() * OwningActor->GetSongSpeed(); 
-		AddActorWorldOffset(Translation);
+		FVector Translation = FVector::XAxisVector;
+		Translation.X *= OwningActor->GetLoaderSongPosition() * 50.0f;// * OwningActor->GetLoaderSongSpeed();
+		AddActorWorldOffset(Translation * DeltaTime);
 	}
 }
 

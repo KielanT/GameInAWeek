@@ -42,11 +42,21 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	UPROPERTY(EditAnywhere)
-	TArray<FSongData> SongData;
 
+	UPROPERTY(EditAnywhere)
+		USceneComponent* TopRow;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* CentreRow;
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* BottomRow;
+
+	UPROPERTY(EditAnywhere)
+		TArray<FSongData> SongData;
+	
 	UPROPERTY()
-	class ASongActor* Owner;
+		class ASongActor* Owner;
 
 	float SongPosition;
 

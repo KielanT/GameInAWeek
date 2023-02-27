@@ -29,19 +29,32 @@ public:
 	UFUNCTION()
 		void PlayBackPercetage(const USoundWave* PlayingSoundWave, const float PlaybackPercent);
 
+	UFUNCTION()
+		void OnAudioPlaybackPercent(const USoundWave* PlayingSoundWave, const float PlaybackPercent);
+		
 	float GetSongPosition();
 
 	float GetSongSpeed();
+
+	float GetLoaderSongPosition();
+
+	float GetLoaderSongSpeed();
 	
 private:
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* AudioComponent;
-	
+
+		UPROPERTY(EditAnywhere)
+    		UAudioComponent* AudioLoaderComponent;
 
 	UPROPERTY(EditAnywhere)
 		class USpawnerActorComponent* SpawnerComponent;
 
 	UPROPERTY()
 		float SongPosition;
-	
+
+	UPROPERTY()
+		float SongLoaderPosition;
+
+	float testTime = 0;
 };

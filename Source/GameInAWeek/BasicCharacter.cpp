@@ -42,6 +42,8 @@ void ABasicCharacter::BeginPlay()
 	SpawnSword();
 	
 	StartingRotation = GetActorRotation();
+
+	IsPaused = false;
 }
 
 // Called every frame
@@ -69,6 +71,11 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 			{
 				InputComp->BindAction(ArmAction, ETriggerEvent::Triggered, this, &ABasicCharacter::RotateArm);
 			}
+
+			if(PauseAction)
+			{
+				InputComp->BindAction(PauseAction, ETriggerEvent::Started, this, &ABasicCharacter::Pause);
+			}
     	}
 
 }
@@ -93,6 +100,20 @@ void ABasicCharacter::RotateArm(const FInputActionValue& Value)
 		float input = Value.Get<float>() * ArmSpeed;
 	
 		ArmDeltaPitch = FMath::Clamp(input + ArmDeltaPitch, ArmMinClamp, ArmMaxClamp);;
+	}
+}
+
+void ABasicCharacter::Pause()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Pause"));
+	IsPaused = !IsPaused;
+	if(IsPaused)
+	{
+		GameModeRef->Pause();
+	}
+	else if (!IsPaused)
+	{
+		GameModeRef->Resume();
 	}
 }
 

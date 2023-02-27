@@ -36,6 +36,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FString GetFinalScore();
+
+	UFUNCTION(BlueprintCallable)
+		FString GetHighScore();
+	
+	UFUNCTION(BlueprintCallable)
+		void Pause();
+
+	UFUNCTION(BlueprintCallable)
+		void Resume();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -45,16 +54,26 @@ private:
 	
 	void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
 	
+	
+	
 private:
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* AudioComponent;
+	
 	UPROPERTY(EditAnywhere, Category = "User Interface")
 		TSubclassOf<UUserWidget> BasicHUDClass;
 
 	UPROPERTY(EditAnywhere, Category = "User Interface")
 	TSubclassOf<UUserWidget> GameOverClass;
 
+	UPROPERTY(EditAnywhere, Category = "User Interface")
+		TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY()
 		UUserWidget* Widget;
+
+	UPROPERTY()
+		UUserWidget* PauseWidget;
 
 	UPROPERTY()
 		int CurrentScore = 0;
@@ -67,6 +86,9 @@ private:
 
 	UPROPERTY()
 		bool bIsGameOver;
+
+	UPROPERTY()
+		int HighScore;
 };
 
 

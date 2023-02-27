@@ -35,6 +35,8 @@ private:
 
 	void RotateArm(const FInputActionValue& Value);
 
+	void Pause();
+
 	void SpawnSword();
 
 public:
@@ -61,6 +63,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 		UInputAction* ArmAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+		UInputAction* PauseAction;
+
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* CameraComponent;
 
@@ -84,4 +89,5 @@ private:
 
 	bool bIsActive;
 
+	bool IsPaused;
 };

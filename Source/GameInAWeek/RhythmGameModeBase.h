@@ -16,4 +16,17 @@ class GAMEINAWEEK_API ARhythmGameModeBase : public AGameModeBase
     
 public:
     ARhythmGameModeBase();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsPlaying();
+
+	UFUNCTION(BlueprintCallable)
+		void StartPlayGame();
+
+protected:
+	virtual void BeginPlay() override;
+	
+private:
+	UPROPERTY()
+		bool bIsPlaying;
 };

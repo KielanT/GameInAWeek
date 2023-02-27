@@ -1,9 +1,14 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "GameInAWeekGameMode.h"
+
+#include "GameDataSaveGame.h"
 #include "GameInAWeekCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Tools/UEdMode.h"
 
 AGameInAWeekGameMode::AGameInAWeekGameMode()
 {
@@ -16,6 +21,10 @@ AGameInAWeekGameMode::AGameInAWeekGameMode()
 	}
 	
 	bIsGameOver = false;
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	AudioComponent->bIsMusic = true;
+	
+	
 }
 
 void AGameInAWeekGameMode::IncreaseScore(int score)
@@ -78,8 +87,45 @@ void AGameInAWeekGameMode::EnableGameInput(bool Enable)
 FString AGameInAWeekGameMode::GetFinalScore()
 {
 	const FString OutScore = FString::FromInt(CurrentScore);
-
+	
 	return "Score: " + OutScore;
+}
+
+FString AGameInAWeekGameMode::GetHighScore()
+{
+	const FString OutScore = FString::FromInt(HighScore);
+	
+	return "High Score: " + OutScore;
+}
+
+void AGameInAWeekGameMode::Pause()
+{
+	
+	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameAndUI());
+	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+	AudioComponent->SetPaused(true);
+	bIsPlaying = false;
+
+	if(PauseWidgetClass)
+	{
+		PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass); // Creates widget
+		if (PauseWidget != nullptr) 
+		{
+			PauseWidget->AddToViewport(); // Adds widget to viewport
+		}
+	}
+}
+
+void AGameInAWeekGameMode::Resume()
+{
+	EnableGameInput(true);
+	AudioComponent->SetPaused(false);
+	bIsPlaying = true;
+
+	if(PauseWidget)
+	{
+		PauseWidget->RemoveFromParent();
+	}
 }
 
 void AGameInAWeekGameMode::BeginPlay()
@@ -89,14 +135,37 @@ void AGameInAWeekGameMode::BeginPlay()
 	bIsPlaying = false;
 	
 	ChangeWidget(BasicHUDClass);
+
+	FString slot = "HighScoreSlot";
+	if(UGameDataSaveGame* LoadedGame = Cast<UGameDataSaveGame>(UGameplayStatics::LoadGameFromSlot(slot, 0)))
+	{
+		HighScore = LoadedGame->HighScore;
+	}
+	else
+	{
+		HighScore = 0;
+	}
 }
 
 void AGameInAWeekGameMode::GameOver()
 {
+	if(CurrentScore > HighScore)
+	{
+		HighScore = CurrentScore;
+		if(UGameDataSaveGame* SaveGame = Cast<UGameDataSaveGame>(UGameplayStatics::CreateSaveGameObject(UGameDataSaveGame::StaticClass())))
+		{
+			SaveGame->HighScore = HighScore;
+			UGameplayStatics::AsyncSaveGameToSlot(SaveGame, SaveGame->SaveSlotName, SaveGame->UserIndex);
+		}
+	}
+
+	
 	ChangeWidget(GameOverClass);
 	bIsPlaying = false;
 	bIsGameOver = true;
 	EnableGameInput(false);
+
+	
 }
 
 void AGameInAWeekGameMode::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)

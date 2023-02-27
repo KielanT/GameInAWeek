@@ -12,3 +12,20 @@ ARhythmGameModeBase::ARhythmGameModeBase()
 	}
 }
 
+bool ARhythmGameModeBase::IsPlaying()
+{
+	return bIsPlaying;
+}
+
+void ARhythmGameModeBase::StartPlayGame()
+{
+	bIsPlaying = true;
+}
+
+void ARhythmGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	bIsPlaying = false;
+}
+

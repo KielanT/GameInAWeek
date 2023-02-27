@@ -4,6 +4,7 @@
 #include "SpawnerActorComponent.h"
 #include "SongActor.h"
 #include "NoteActor.h"
+#include "NoteLoaderActor.h"
 
 // Sets default values for this component's properties
 USpawnerActorComponent::USpawnerActorComponent()
@@ -23,23 +24,33 @@ void USpawnerActorComponent::BeginPlay()
 
 	Owner = Cast<ASongActor>(GetOwner());
 
+	FActorSpawnParameters Params;
+	Params.Owner = GetOwner();
+	FTransform trans = GetOwner()->GetTransform();
+	
+	if(NoteLoaderClass)
+	{
+		NoteLoaderActor = GetWorld()->SpawnActor<ANoteLoaderActor>(NoteLoaderClass, trans, Params);
+	}
 	
 	if(!SongData.IsEmpty())
 	{
 		MaxIndex = SongData.Num() - 1;
 		Index = 0;
+
+		if(NoteActorClass != nullptr)
+		{
+			for(auto data : SongData)
+			{
+				FVector vec = trans.GetLocation();
+				vec.X = data.WorldPositionX;
+				trans.SetLocation(vec);
+				ANoteActor* NoteActor = GetWorld()->SpawnActor<ANoteActor>(NoteActorClass, trans, Params);
+			}
+		}
 	}
 
-	if(NoteActorClass != nullptr)
-	{
-		FActorSpawnParameters Params;
-		Params.Owner = GetOwner();
-		FTransform trans = GetOwner()->GetTransform();
-		FVector vec = trans.GetLocation();
-		vec.X = 0;
-		trans.SetLocation(vec);
-		NoteActor = GetWorld()->SpawnActor<ANoteActor>(NoteActorClass, trans, Params);
-	}
+	
 	
 }
 
@@ -54,20 +65,19 @@ void USpawnerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		SongPosition = Owner->GetSongPosition();
 	}
 	
-	if(!SongData.IsEmpty())
-	{
-		if(Index <= MaxIndex)
-		{
-			if(SongData[Index].Position <= SongPosition)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Song Pos %f, Location: %s"), SongPosition, *NoteActor->GetActorLocation().ToString());
-				UE_LOG(LogTemp, Warning, TEXT("Hit Pos %f"), SongData[Index].Position);
-				UE_LOG(LogTemp, Warning, TEXT("Song Pos %f"), SongPosition);
-				
-				Index++;
-			}
-
-		}
-	}
+	//if(!SongData.IsEmpty())
+	//{
+	//	if(Index <= MaxIndex)
+	//	{
+	//		if(SongData[Index].SongPosition <= SongPosition)
+	//		{
+	//			UE_LOG(LogTemp, Warning, TEXT("Song Pos %f, Location: %s"), SongPosition, *NoteActor->GetActorLocation().ToString());
+	//			UE_LOG(LogTemp, Warning, TEXT("Actual beat Pos %f"), SongData[Index].SongPosition);
+	//			
+	//			Index++;
+	//		}
+//
+	//	}
+	//}
 }
 

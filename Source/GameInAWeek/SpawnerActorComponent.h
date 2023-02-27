@@ -3,20 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
 #include "SpawnerActorComponent.generated.h"
 
+class ANoteLoaderActor;
 class ANoteActor;
+
 USTRUCT(BlueprintType)
 struct FSongData
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	float Position;
+		float SongPosition;
 
 	UPROPERTY(EditAnywhere)
-	int Row;
+		float WorldPositionX;
+
+	UPROPERTY(EditAnywhere)
+		int Row;
 };
 
 
@@ -51,8 +55,11 @@ private:
 	int MaxIndex;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ANoteActor> NoteActorClass;
+		TSubclassOf<ANoteActor> NoteActorClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ANoteLoaderActor> NoteLoaderClass;
 
 	UPROPERTY()
-	ANoteActor* NoteActor;
+		ANoteLoaderActor* NoteLoaderActor;
 };

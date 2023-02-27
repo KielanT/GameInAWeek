@@ -47,8 +47,12 @@ void ASongActor::PlayBackPercetage(const USoundWave* PlayingSoundWave, const flo
 
 float ASongActor::GetSongPosition()
 {
-	//return SongPosition;
-	return AudioComponent->GetSound()->GetPitchMultiplier();;
+	return SongPosition;
+}
+
+float ASongActor::GetSongSpeed()
+{
+	return AudioComponent->PitchMultiplier;
 }
 
 

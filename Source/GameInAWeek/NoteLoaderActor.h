@@ -4,17 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SongActor.generated.h"
-
+#include "NoteLoaderActor.generated.h"
 
 UCLASS()
-class GAMEINAWEEK_API ASongActor : public AActor
+class GAMEINAWEEK_API ANoteLoaderActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASongActor();
+	ANoteLoaderActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,24 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-
-
-	UFUNCTION()
-		void PlayBackPercetage(const USoundWave* PlayingSoundWave, const float PlaybackPercent);
-
-	float GetSongPosition();
-
-	float GetSongSpeed();
-	
-private:
 	UPROPERTY(EditAnywhere)
-		UAudioComponent* AudioComponent;
-	
+		UStaticMeshComponent* Mesh;
 
-	UPROPERTY(EditAnywhere)
-		class USpawnerActorComponent* SpawnerComponent;
+	UPROPERTY()	
+		class ASongActor* OwningActor; 
 
-	UPROPERTY()
-		float SongPosition;
-	
 };

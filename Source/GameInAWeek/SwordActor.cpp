@@ -63,11 +63,11 @@ void ASwordActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* 
 		
 		AFallingActor* Actor = Cast<AFallingActor>(OtherActor);
 		
-		if(Actor)
+		if(Actor && bIsPlayerLunging)
 		{
 			Actor->Hit();
 		}
-		else
+		else if(!Actor)
 		{
 			OtherActor->Destroy();
 		}

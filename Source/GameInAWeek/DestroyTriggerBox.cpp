@@ -16,6 +16,5 @@ void ADestroyTriggerBox::BeginPlay()
 
 void ADestroyTriggerBox::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Triggered destroy"));
 	OtherActor->Destroy();
 }

@@ -24,9 +24,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void StartPlayGame();
-
+	
+		
 	UFUNCTION()
-		void Missed(bool hasMissed);
+		void PlayerHit();
 
 	UFUNCTION(BlueprintCallable)
 		bool IsGameOver();
@@ -39,6 +40,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FString GetHighScore();
+
+	UFUNCTION(BlueprintCallable)
+		int GetHits();
 	
 	UFUNCTION(BlueprintCallable)
 		void Pause();
@@ -46,17 +50,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void Resume();
 
-	void GameOver();
+	UFUNCTION(BlueprintCallable)
+		FString GetReason();
+	
+	void GameOver(FString reasonText);
+	
+	
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	
-	
 	void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
-	
-	
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -84,13 +90,16 @@ private:
 		bool bIsPlaying;
 
 	UPROPERTY()
-		int Misses;
+		int Hits;
 
 	UPROPERTY()
 		bool bIsGameOver;
 
 	UPROPERTY()
 		int HighScore;
+		
+	UPROPERTY()
+		FString ReasonText;
 };
 
 

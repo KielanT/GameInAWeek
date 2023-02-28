@@ -23,7 +23,7 @@ AGameInAWeekGameMode::AGameInAWeekGameMode()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
 	AudioComponent->bIsMusic = true;
 	
-	
+	ReasonText = "";
 }
 
 void AGameInAWeekGameMode::IncreaseScore(int score)
@@ -47,21 +47,15 @@ void AGameInAWeekGameMode::StartPlayGame()
 	EnableGameInput(true);
 }
 
-void AGameInAWeekGameMode::Missed(bool hasMissed)
-{
-	if(hasMissed)
-	{
-		Misses++;
-	}
-	else
-	{
-		if(Misses > 0)
-			Misses--;
-	}
 
-	if(Misses >= 3)
+void AGameInAWeekGameMode::PlayerHit()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	Hits++;
+	
+	if(Hits >= 3)
 	{
-		GameOver();
+		GameOver("You were hit too many times! Hit or Dodge the balls");
 	}
 }
 
@@ -97,6 +91,11 @@ FString AGameInAWeekGameMode::GetHighScore()
 	return "High Score: " + OutScore;
 }
 
+int AGameInAWeekGameMode::GetHits()
+{
+	return Hits;
+}
+
 void AGameInAWeekGameMode::Pause()
 {
 	
@@ -127,6 +126,11 @@ void AGameInAWeekGameMode::Resume()
 	}
 }
 
+FString AGameInAWeekGameMode::GetReason()
+{
+	return ReasonText;
+}
+
 void AGameInAWeekGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -146,8 +150,9 @@ void AGameInAWeekGameMode::BeginPlay()
 	}
 }
 
-void AGameInAWeekGameMode::GameOver()
+void AGameInAWeekGameMode::GameOver(FString reasonText)
 {
+	ReasonText = reasonText;
 	AudioComponent->Stop();
 	if(CurrentScore > HighScore)
 	{

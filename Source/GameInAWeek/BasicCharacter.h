@@ -29,6 +29,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+	
 private:
 	
 	void Lunge();
@@ -43,6 +45,12 @@ private:
 	void DodgeLeft();
 	void ResetDodge();
 
+	UFUNCTION()
+		void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	
 public:
 	UPROPERTY(BlueprintReadOnly)
 		float ArmDeltaPitch;
@@ -50,6 +58,15 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		USceneComponent* Root;
+
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* AudioComponent;
+
+	UPROPERTY(EditAnywhere, Category = Audio)
+		USoundBase* BombSound;
+
+	UPROPERTY(EditAnywhere, Category = Audio)
+		USoundBase* MissedSound;
 	
 	UPROPERTY()
 		class AGameInAWeekGameMode* GameModeRef;
@@ -111,9 +128,15 @@ private:
 	UPROPERTY(EditAnywhere)
 		float DodgeTimer = 1.0f;
 	
+	UPROPERTY()
+		class AFallingActor* PreviousHitActor;
+	
 	bool bIsActive;
 
 	bool IsPaused;
 
-	
+	bool IsLunging;
+
+
 };
+

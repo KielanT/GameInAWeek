@@ -4,12 +4,14 @@
 #include "BasicCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "FallingActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "SwordActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameInAWeekGameMode.h"
+#include "Components/AudioComponent.h"
 
 
 // Sets default values
@@ -26,6 +28,10 @@ ABasicCharacter::ABasicCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(CameraComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	AudioComponent->SetupAttachment(GetCapsuleComponent());
+
 	
 	
 }
@@ -34,7 +40,7 @@ ABasicCharacter::ABasicCharacter()
 void ABasicCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	AudioComponent->Stop();
 	GameModeRef = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 		
 	if(APlayerController* PlayerController = Cast<APlayerController>(GetController()))
@@ -50,6 +56,13 @@ void ABasicCharacter::BeginPlay()
 	StartingRotation = GetActorRotation();
 
 	IsPaused = false;
+	IsLunging = false;
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABasicCharacter::OnHit);
+
+	PreviousHitActor = nullptr;
+
+	
 }
 
 // Called every frame
@@ -58,6 +71,7 @@ void ABasicCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	bIsActive = GameModeRef->IsPlaying();
+	SwordActor->bIsPlayerLunging = IsLunging;
 	
 }
 
@@ -103,7 +117,17 @@ void ABasicCharacter::Lunge()
 	{
 		if(LungeMontage && GetCurrentMontage() != LungeMontage) // Detecting the montage playing stops the player spamming
 		{
-			PlayAnimMontage(LungeMontage);
+			IsLunging = true;
+
+			if(UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+			{
+				AnimInstance->Montage_Play(LungeMontage);
+				
+				// Must be binded after play, otherwise delegate never gets called
+				FOnMontageEnded MontageEndedDelegate;
+				MontageEndedDelegate.BindUObject(this, &ABasicCharacter::OnMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, LungeMontage);
+			}
 		}
 	}
 }
@@ -139,9 +163,7 @@ void ABasicCharacter::SpawnSword()
 	{
 		FActorSpawnParameters Params;
 		FAttachmentTransformRules Rules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
-		//Rules.LocationRule = EAttachmentRule::SnapToTarget;
 		Rules.RotationRule = EAttachmentRule::KeepWorld;
-		//Rules.ScaleRule = EAttachmentRule::SnapToTarget;
 		
 		SwordActor = GetWorld()->SpawnActor<ASwordActor>(SwordActorClass, GetTransform(), Params);
 		SwordActor->AttachToComponent(GetMesh(), Rules, FName("WeaponSocket"));
@@ -171,3 +193,53 @@ void ABasicCharacter::ResetDodge()
 	SetActorLocation(StartPos);
 }
 
+void ABasicCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	IsLunging = false;
+}
+
+void ABasicCharacter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFallingActor::StaticClass()))
+	{
+		AFallingActor* Actor = Cast<AFallingActor>(OtherActor);
+
+		if(Actor->GetType() == EObjectType::Bomb)
+		{
+			if(BombSound)
+			{
+				AudioComponent->SetSound(BombSound);
+				AudioComponent->Play();
+			}
+		}
+		else
+		{
+			if(MissedSound)
+			{
+				AudioComponent->SetSound(MissedSound);
+				AudioComponent->Play();
+			}
+		}
+		
+		if(PreviousHitActor == nullptr)
+		{
+			GameModeRef->PlayerHit();
+			PreviousHitActor = Actor;
+		}
+		
+		if(PreviousHitActor != Actor)
+		{
+			if(Actor->GetType() == EObjectType::Bomb)
+			{
+				GameModeRef->GameOver("You Hit A bomb! Dodge the bombs");
+			}
+			if(Actor->GetType() == EObjectType::Ball)
+			{
+				
+				GameModeRef->PlayerHit();
+				
+			}
+		}
+		PreviousHitActor = Actor;
+	}
+}

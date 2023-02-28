@@ -29,6 +29,10 @@ private:
 		void OnBeginOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
 
+public:
+	UPROPERTY()
+		bool bIsPlayerLunging;
+	
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
@@ -45,5 +49,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* CollisionBox;
 
+	
 	
 };

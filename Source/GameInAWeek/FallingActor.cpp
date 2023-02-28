@@ -19,6 +19,7 @@ AFallingActor::AFallingActor()
 	SetRootComponent(StaticMeshComponent);
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("HitSound"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -37,14 +38,12 @@ void AFallingActor::BeginPlay()
 
 		ActorDatas.Empty(); // Destroys the other meshes
 	}
-
-	//StaticMeshComponent->SetStaticMesh(BallMesh);
 	
 	StaticMeshComponent->SetEnableGravity(false);
 	
-	
 	IsHit = false;
-	IsMissed = false;
+	
+	
 }
 
 // Called every frame
@@ -54,7 +53,7 @@ void AFallingActor::Tick(float DeltaTime)
 
 	if(GameMode->IsPlaying())
 	{
-		if(!IsHit || !IsMissed)
+		if(!IsHit)
 		{
 			FVector Translation = MovementDirection * Speed * DeltaTime;
 			AddActorWorldOffset(Translation);
@@ -72,64 +71,48 @@ void AFallingActor::SetSpeed(float speed)
 
 void AFallingActor::Hit()
 {
-	if(!IsMissed)
+
+	if(ActorData.Type != EObjectType::Bomb)
 	{
-		if(ActorData.Type != EObjectType::Bomb)
+		if(!AudioComponent->IsPlaying() && !HitSounds.IsEmpty())
 		{
-			if(!AudioComponent->IsPlaying() && !HitSounds.IsEmpty())
-			{
-				const int Index = FMath::RandRange(0, HitSounds.Num() - 1);
-				USoundBase* Sound = HitSounds[Index];
-				AudioComponent->SetSound(Sound);
-				AudioComponent->Play();
-			}
-			if(!IsHit)
-			{
-				GameMode->IncreaseScore(Score);
-				GameMode->Missed(false);
-				StaticMeshComponent->SetEnableGravity(true);
-				StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
-			}
-		}
-		else
-		{
-			AudioComponent->SetSound(BombSound);
+			const int Index = FMath::RandRange(0, HitSounds.Num() - 1);
+			USoundBase* Sound = HitSounds[Index];
+			AudioComponent->SetSound(Sound);
 			AudioComponent->Play();
-			GameMode->GameOver();
 		}
+		if(!IsHit)
+		{
+			GameMode->IncreaseScore(Score);
+			StaticMeshComponent->SetEnableGravity(true);
+			StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
+		}
+	}
+	else
+	{
+		AudioComponent->SetSound(BombSound);
+		AudioComponent->Play();
+		GameMode->GameOver("You Hit A bomb! Dodge the bombs");
+	}
 
 		
 		
-		IsHit = true;
+	IsHit = true;
 		
 		
-	}
-	
-	
 }
 
 void AFallingActor::Missed()
 {
-	IsMissed = true;
-	StaticMeshComponent->SetEnableGravity(true);
 	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	
+	GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, this, &AFallingActor::Death, DeathTime, false);
+	
+}
 
-	if(!AudioComponent->IsPlaying())
-	{
-		if(MissedSound)
-		{
-			AudioComponent->SetSound(MissedSound);
-			AudioComponent->Play();
-		}
-	}
-	
-	if(!IsHit)
-	{
-		SwapMeshes();
-		GameMode->Missed(true);
-	}
-		GetWorld()->GetTimerManager().SetTimer(DeathTimerHandle, this, &AFallingActor::Death, DeathTime, false);
-	
+EObjectType AFallingActor::GetType()
+{
+	return ActorData.Type;
 }
 
 void AFallingActor::Death()
@@ -137,14 +120,7 @@ void AFallingActor::Death()
 	Destroy();
 }
 
-void AFallingActor::SwapMeshes()
-{
-	if(DestructionMesh)
-	{
-		FActorSpawnParameters Params;
-		GetWorld()->SpawnActor<AActor>(DestructionMesh, GetTransform(), Params);
-	}
-}
+
 
 
 

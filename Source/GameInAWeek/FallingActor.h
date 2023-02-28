@@ -59,13 +59,15 @@ public:
 	
 	void Hit();
 	void Missed();
-	
-	
+
+	EObjectType GetType();
+
 private:
 	UFUNCTION()
 		void Death();
 
-	void SwapMeshes();
+	
+
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -94,9 +96,7 @@ private:
 
 	UPROPERTY()
 		bool IsHit;
-
-	UPROPERTY()
-		bool IsMissed;
+	
 
 	UPROPERTY()
 		FTimerHandle DeathTimerHandle;
@@ -116,6 +116,4 @@ private:
 	UPROPERTY(EditAnywhere, Category = Audio)
 		USoundBase* BombSound;
 	
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AActor> DestructionMesh;
 };

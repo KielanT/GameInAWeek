@@ -4,6 +4,8 @@
 #include "SafteyNetTriggerBox.h"
 #include "FallingActor.h"
 
+// Safety net actor has changed a lot through out development and is now used to tell the actor if the player has missed it or not
+
 ASafteyNetTriggerBox::ASafteyNetTriggerBox()
 {
 	

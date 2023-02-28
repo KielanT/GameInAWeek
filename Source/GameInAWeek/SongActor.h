@@ -7,6 +7,8 @@
 #include "SongActor.generated.h"
 
 
+
+
 UCLASS()
 class GAMEINAWEEK_API ASongActor : public AActor
 {
@@ -31,21 +33,25 @@ public:
 
 	UFUNCTION()
 		void OnAudioPlaybackPercent(const USoundWave* PlayingSoundWave, const float PlaybackPercent);
-		
-	float GetSongPosition();
 
-	float GetSongSpeed();
+	UFUNCTION()
+		float GetSongPosition();
 
-	float GetLoaderSongPosition();
+	UFUNCTION()
+		float GetSongSpeed();
 
-	float GetLoaderSongSpeed();
+	UFUNCTION()
+		float GetLoaderSongPosition();
+
+	UFUNCTION()
+		float GetLoaderSongSpeed();
 	
 private:
 	UPROPERTY(EditAnywhere)
 		UAudioComponent* AudioComponent;
 
-		UPROPERTY(EditAnywhere)
-    		UAudioComponent* AudioLoaderComponent;
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* AudioLoaderComponent;
 
 	UPROPERTY(EditAnywhere)
 		class USpawnerActorComponent* SpawnerComponent;
@@ -55,6 +61,5 @@ private:
 
 	UPROPERTY()
 		float SongLoaderPosition;
-
-	float testTime = 0;
+	
 };

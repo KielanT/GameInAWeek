@@ -38,18 +38,24 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	void Lunge();
+	UFUNCTION()
+		void Lunge();
 
-	void LowLunge();
+	UFUNCTION()
+		void LowLunge();
 
-	void HighLunge();
+	UFUNCTION()
+		void HighLunge();
 
-	void ResetLunge();
+	UFUNCTION()
+		void ResetLunge();
 
-	void SpawnSword();
+	UFUNCTION()
+		void SpawnSword();
 
 private:
-	ELungeState LungeState;
+	UPROPERTY()
+		ELungeState LungeState;
 
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputMappingContext* DefaultMappingContext;

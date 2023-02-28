@@ -7,6 +7,9 @@
 #include "InputActionValue.h"
 #include "GameInAWeekCharacter.generated.h"
 
+/**********************************************************************************************************/
+/**************** Unreal Engines default player used to reference and understand enhanced input ***********/
+/**********************************************************************************************************/
 
 UCLASS(config=Game)
 class AGameInAWeekCharacter : public ACharacter

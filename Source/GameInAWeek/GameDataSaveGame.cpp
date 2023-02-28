@@ -5,6 +5,7 @@
 
 UGameDataSaveGame::UGameDataSaveGame()
 {
+	// Sets the default values
 	SaveSlotName = TEXT("HighScoreSlot");
 	UserIndex = 0;
 }

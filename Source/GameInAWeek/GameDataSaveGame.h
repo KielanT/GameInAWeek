@@ -17,12 +17,15 @@ class GAMEINAWEEK_API UGameDataSaveGame : public USaveGame
 public:
 	UGameDataSaveGame();
 
+	// Data to be saved
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		int HighScore;
 
+	// Save file name
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		FString SaveSlotName;
 
+	// Save file index
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		uint32 UserIndex;
 };

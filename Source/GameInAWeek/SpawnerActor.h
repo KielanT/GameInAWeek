@@ -46,12 +46,22 @@ private:
 	
 	UPROPERTY()
 		class AGameInAWeekGameMode* GameMode;
-	
-	float SpawnerTime = 0;
-	float SpawnRate = 1.0f;
-	float SpawnRateMin;
-	float SpawnRateMax;
 
-	float GameTimer = 0;
-	float GameTimerRate;
+	UPROPERTY()
+		float SpawnerTime = 0;
+
+	UPROPERTY()
+		float SpawnRate = 1.0f;
+
+	UPROPERTY()
+		float SpawnRateMin;
+
+	UPROPERTY()
+		float SpawnRateMax;
+
+	UPROPERTY()
+		float GameTimer = 0;
+
+	UPROPERTY()
+		float GameTimerRate;
 };

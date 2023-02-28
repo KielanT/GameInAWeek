@@ -17,6 +17,7 @@ ASwordActor::ASwordActor()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
 	SetRootComponent(StaticMeshComponent);
 
+	// Creates the collision box
 	CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
 	CollisionBox->SetupAttachment(StaticMeshComponent);
 
@@ -27,24 +28,27 @@ void ASwordActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	// Gets the Game instance to search and spawn the correct sword
 	if(UMainGameInstance* GameInstance = Cast<UMainGameInstance>(GetGameInstance()))
 	{
 		Key = GameInstance->SwordTypes;
 	}
-	for(auto& sword : SwordMap)
-	{
-		if(sword.Key == Key)
-		{
-			SelectedMesh = sword.Value;
-		}
-	}
-	
+	SelectedMesh = *SwordMap.Find(Key);
+	//for(auto& sword : SwordMap)
+	//{
+	//	if(sword.Key == Key)
+	//	{
+	//		SelectedMesh = sword.Value;
+	//	}
+	//}
+
+	// Sets the sowrd mesh
 	if(SelectedMesh)
 	{
 		StaticMeshComponent->SetStaticMesh(SelectedMesh);
 	}
 
+	// Sets the collision bind
 	CollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ASwordActor::OnBeginOverlap);
 }
 
@@ -58,11 +62,13 @@ void ASwordActor::Tick(float DeltaTime)
 void ASwordActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Checks if the object has a tag (this is not really needed anymore
+	// Should be replaced by checking if the actor is the correct class
 	if(OtherActor->ActorHasTag(TEXT("Object")))
 	{
-		
 		AFallingActor* Actor = Cast<AFallingActor>(OtherActor);
-		
+
+		// If the player is lunging and hit the actor then tell the actor its been hit
 		if(Actor && bIsPlayerLunging)
 		{
 			Actor->Hit();

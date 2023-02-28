@@ -12,18 +12,21 @@ ASongActor::ASongActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
+	// Audio component to play the main song
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
 	AudioComponent->bAlwaysPlay = false;
 	AudioComponent->bIsMusic = true;
 	AudioComponent->bStopWhenOwnerDestroyed = true;
 	AudioComponent->bAutoActivate = false;
 
+	// Audio Component to load in the notes
 	AudioLoaderComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Loader"));
 	AudioLoaderComponent->bIsMusic = true;
 	AudioLoaderComponent->bStopWhenOwnerDestroyed = true;
 	AudioLoaderComponent->bAutoActivate = false;
-	
+
+	// Spawner component to spawn in the notes
 	SpawnerComponent = CreateDefaultSubobject<USpawnerActorComponent>(TEXT("Spawner"));
 
 
@@ -33,8 +36,9 @@ ASongActor::ASongActor()
 void ASongActor::BeginPlay()
 {
 	Super::BeginPlay();
-	AudioComponent->OnAudioPlaybackPercent.AddDynamic(this, &ASongActor::PlayBackPercetage);
 
+	// Allows the song actor to calculate the songs position
+	AudioComponent->OnAudioPlaybackPercent.AddDynamic(this, &ASongActor::PlayBackPercetage);
 	AudioLoaderComponent->OnAudioPlaybackPercent.AddDynamic(this, &ASongActor::OnAudioPlaybackPercent);
 	AudioLoaderComponent->Play();
 }
@@ -43,32 +47,27 @@ void ASongActor::BeginPlay()
 void ASongActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-
-	
 }
 
 
 void ASongActor::PlayBackPercetage(const USoundWave* PlayingSoundWave, const float PlaybackPercent)
 {
-	SongPosition = PlaybackPercent * PlayingSoundWave->Duration;
-	//UE_LOG(LogTemp, Warning, TEXT("Playback %f"), SongPosition);
+	SongPosition = PlaybackPercent * PlayingSoundWave->Duration; // Calculates the song position
 }
 
 void ASongActor::OnAudioPlaybackPercent(const USoundWave* PlayingSoundWave, const float PlaybackPercent)
 {
 	SongLoaderPosition = PlaybackPercent * PlayingSoundWave->Duration;
-	//UE_LOG(LogTemp, Warning, TEXT("Playback Loader, %f"), SongLoaderPosition);
 }
 
 float ASongActor::GetSongPosition()
 {
-	return SongPosition;
+	return SongPosition; // Gets the song position
 }
 
 float ASongActor::GetSongSpeed()
 {
-	return AudioComponent->PitchMultiplier;
+	return AudioComponent->PitchMultiplier; // Unreal engine uses the pitch for the speed of the song (so does unity)
 }
 
 float ASongActor::GetLoaderSongPosition()

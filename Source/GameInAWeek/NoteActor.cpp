@@ -7,6 +7,8 @@
 #include "SongActor.h"
 #include "Kismet/GameplayStatics.h"
 
+// The note actor is what would be hit if the rhythm game worked currently
+
 // Sets default values
 ANoteActor::ANoteActor()
 {
@@ -22,7 +24,7 @@ void ANoteActor::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OwningActor = Cast<ASongActor>(GetOwner());
+	OwningActor = Cast<ASongActor>(GetOwner()); // Used to get the song speed and position
 	GameModeRef = Cast<ARhythmGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
@@ -31,9 +33,12 @@ void ANoteActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// If worked this would be called on the play state started
 	//if(OwningActor && GameModeRef->IsPlaying())
 	//{
-	//	FVector Translation = -FVector::XAxisVector;
+	//	FVector Translation = -FVector::XAxisVector; // Sets the direction to be towards the player
+	
+	//  Moves the note by song position and speed (this is how rhythm games are supposed to work
 	//	Translation.X *= OwningActor->GetSongPosition() * OwningActor->GetSongSpeed(); 
 	//	AddActorWorldOffset(Translation);
 	//}

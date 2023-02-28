@@ -14,7 +14,8 @@ class AGameInAWeekGameMode : public AGameModeBase
 public:
 	AGameInAWeekGameMode();
 
-	void IncreaseScore(int score);
+	UFUNCTION()
+		void IncreaseScore(int score);
 
 	UFUNCTION(BlueprintCallable)
 		int GetScore();
@@ -52,17 +53,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FString GetReason();
+
+	UFUNCTION()
+		void GameOver(FString reasonText);
 	
-	void GameOver(FString reasonText);
-	
-	
-	
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	
-	void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
+	UFUNCTION()
+		void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
 	
 private:
 	UPROPERTY(EditAnywhere)

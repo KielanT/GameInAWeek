@@ -16,5 +16,6 @@ void ADestroyTriggerBox::BeginPlay()
 
 void ADestroyTriggerBox::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
+	// Destroys any actor that overlaps
 	OtherActor->Destroy();
 }

@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "BasicCharacter.generated.h"
 
+// All animations where created by me
 
 class ASwordActor;
 UCLASS()
@@ -32,7 +33,6 @@ public:
 
 	
 private:
-	
 	void Lunge();
 
 	void RotateArm(const FInputActionValue& Value);
@@ -44,6 +44,8 @@ private:
 	void DodgeRight();
 	void DodgeLeft();
 	void ResetDodge();
+
+	void Dodge(float deltaTime);
 
 	UFUNCTION()
 		void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -60,7 +62,7 @@ private:
 		USceneComponent* Root;
 
 	UPROPERTY(EditAnywhere)
-	UAudioComponent* AudioComponent;
+		UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditAnywhere, Category = Audio)
 		USoundBase* BombSound;
@@ -110,14 +112,8 @@ private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<ASwordActor> SwordActorClass;
 
-	UPROPERTY(EditAnywhere)
-		float DodgeValue = 50.0f;
-	
 	UPROPERTY()
 		ASwordActor* SwordActor;
-
-	UPROPERTY()
-		FRotator StartingRotation;
 
 	UPROPERTY()
 		FVector StartPos;
@@ -126,17 +122,32 @@ private:
 		FTimerHandle DodgeTimerHandle;
 
 	UPROPERTY(EditAnywhere)
+		float DodgeValue = 50.0f;
+	
+	
+	UPROPERTY(EditAnywhere)
 		float DodgeTimer = 1.0f;
+
+	UPROPERTY(EditAnywhere)
+		float DodgeSpeed = 10.0f;
+
+	UPROPERTY()
+		FVector DodgeDirection;
 	
 	UPROPERTY()
 		class AFallingActor* PreviousHitActor;
 	
-	bool bIsActive;
+	UPROPERTY()
+		bool bIsActive;
 
-	bool IsPaused;
+	UPROPERTY()
+		bool IsPaused;
 
-	bool IsLunging;
+	UPROPERTY()
+		bool IsLunging;
 
+	UPROPERTY()
+		bool bIsDodging;
 
 };
 

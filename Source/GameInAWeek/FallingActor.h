@@ -7,6 +7,9 @@
 
 #include "FallingActor.generated.h"
 
+// Called falling actor because was going to fall from the sky but making it come from the side made more sense
+
+// Enum class that is used to set its type
 UENUM(BlueprintType)
 enum class EObjectType : uint8
 {
@@ -15,6 +18,7 @@ enum class EObjectType : uint8
 	Bomb
 };
 
+// Struct with the actor data that can be set in blueprint
 USTRUCT(BlueprintType)
 struct FActorData
 {
@@ -56,19 +60,20 @@ public:
 
 	UFUNCTION()
 		void SetSpeed(float speed);
-	
-	void Hit();
-	void Missed();
 
-	EObjectType GetType();
+	UFUNCTION()
+		void Hit();
+
+	UFUNCTION()
+		void Missed();
+
+	UFUNCTION()
+		EObjectType GetType();
 
 private:
 	UFUNCTION()
 		void Death();
 
-	
-
-	
 private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
@@ -84,7 +89,8 @@ private:
 
 	UPROPERTY()
 		float Speed = 0;
-	
+
+	// Allows the data to be set in bp
 	UPROPERTY(EditAnywhere, Category = Data)
 		TArray<FActorData> ActorDatas;
 
@@ -97,7 +103,6 @@ private:
 	UPROPERTY()
 		bool IsHit;
 	
-
 	UPROPERTY()
 		FTimerHandle DeathTimerHandle;
 

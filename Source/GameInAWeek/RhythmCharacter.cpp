@@ -7,6 +7,11 @@
 #include "Components/CapsuleComponent.h"
 #include "SwordActor.h"
 
+// Rhythm Character has different controls and animations
+// If the player holds w and then left mouse click, then it does a high lunge 
+// If the player just does a left mouse click, then it does a centre lunge 
+// If the player holds s and then left mouse click, then it does a low lunge 
+
 // Sets default values
 ARhythmCharacter::ARhythmCharacter()
 {
@@ -32,6 +37,8 @@ void ARhythmCharacter::BeginPlay()
 		}
 	}
 	SpawnSword();
+
+	// Sets default value
 	LungeState = ELungeState::Lunge;
 }
 
@@ -47,6 +54,8 @@ void ARhythmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+
+	// Sets up the enhanced input
 	if(UEnhancedInputComponent* InputComp = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		if(LungeAction)
@@ -70,6 +79,7 @@ void ARhythmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ARhythmCharacter::Lunge()
 {
+	// Plays the animation depending on the type of lunge
 	if(LungeState == ELungeState::Lunge)
 	{
 		if(LungeMontage && GetCurrentMontage() != LungeMontage)
@@ -89,28 +99,27 @@ void ARhythmCharacter::Lunge()
 
 void ARhythmCharacter::LowLunge()
 {
-	LungeState = ELungeState::LowLunge;
+	LungeState = ELungeState::LowLunge; // Sets low lunge
 }
 
 void ARhythmCharacter::HighLunge()
 {
-	LungeState = ELungeState::HighLunge;
+	LungeState = ELungeState::HighLunge; // Sets high lunge
 }
 
 void ARhythmCharacter::ResetLunge()
 {
-	LungeState = ELungeState::Lunge;
+	LungeState = ELungeState::Lunge; // Resets the lunge to allow the centre lunge
 }
 
 void ARhythmCharacter::SpawnSword()
 {
+	// Spawns the sword, exactly the same as the other character
 	if(SwordActorClass)
 	{
 		FActorSpawnParameters Params;
 		FAttachmentTransformRules Rules = FAttachmentTransformRules::SnapToTargetNotIncludingScale;
-		//Rules.LocationRule = EAttachmentRule::SnapToTarget;
 		Rules.RotationRule = EAttachmentRule::KeepWorld;
-		//Rules.ScaleRule = EAttachmentRule::SnapToTarget;
 		
 		SwordActor = GetWorld()->SpawnActor<ASwordActor>(SwordActorClass, GetTransform(), Params);
 		SwordActor->AttachToComponent(GetMesh(), Rules, FName("WeaponSocket"));

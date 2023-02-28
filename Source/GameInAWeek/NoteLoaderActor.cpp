@@ -7,6 +7,10 @@
 #include "SongActor.h"
 #include "Kismet/GameplayStatics.h"
 
+// This is used to play the song before the game starts to load in all the notes in the correct position
+// However since this moves by song position and speed, the notes get spawned in difference places can be off from as little as .1 or over a 100
+// Even when using delta time the spawns are off 
+
 // Sets default values
 ANoteLoaderActor::ANoteLoaderActor()
 {
@@ -32,6 +36,8 @@ void ANoteLoaderActor::Tick(float DeltaTime)
 	if(OwningActor)
 	{
 		FVector Translation = FVector::XAxisVector;
+
+		// Attempted solution was to spawn in song position by a set speed
 		Translation.X *= OwningActor->GetLoaderSongPosition() * 50.0f;// * OwningActor->GetLoaderSongSpeed();
 		AddActorWorldOffset(Translation * DeltaTime);
 	}

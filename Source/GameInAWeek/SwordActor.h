@@ -27,7 +27,7 @@ public:
 private:
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,
-			bool bFromSweep, const FHitResult & SweepResult);
+			bool bFromSweep, const FHitResult & SweepResult); 
 
 public:
 	UPROPERTY()
@@ -39,7 +39,8 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = Sword)
 		ESwordTypes Key;
-	
+
+	// Used to set the swords in blueprint
 	UPROPERTY(EditAnywhere, Category = Sword)
 		TMap<ESwordTypes, UStaticMesh*> SwordMap;
 	

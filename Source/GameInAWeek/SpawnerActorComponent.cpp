@@ -6,6 +6,8 @@
 #include "NoteActor.h"
 #include "NoteLoaderActor.h"
 
+// Used for spawning the notes in the song actor
+
 // Sets default values for this component's properties
 USpawnerActorComponent::USpawnerActorComponent()
 {
@@ -13,6 +15,7 @@ USpawnerActorComponent::USpawnerActorComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// Sets the spawn rows 
 	TopRow = CreateDefaultSubobject<USceneComponent>(TEXT("Top Row"));
 	CentreRow = CreateDefaultSubobject<USceneComponent>(TEXT("Centre Row"));
 	BottomRow = CreateDefaultSubobject<USceneComponent>(TEXT("Bottom Row"));
@@ -27,15 +30,17 @@ void USpawnerActorComponent::BeginPlay()
 
 	Owner = Cast<ASongActor>(GetOwner());
 
+	// Spawns the loader note on begin play to load in the song
 	FActorSpawnParameters Params;
 	Params.Owner = GetOwner();
-	FTransform trans = GetOwner()->GetTransform();
+	FTransform Trans = GetOwner()->GetTransform();
 	
 	if(NoteLoaderClass)
 	{
-		NoteLoaderActor = GetWorld()->SpawnActor<ANoteLoaderActor>(NoteLoaderClass, trans, Params);
+		NoteLoaderActor = GetWorld()->SpawnActor<ANoteLoaderActor>(NoteLoaderClass, Trans, Params);
 	}
-	
+
+	// Sets the indexes if the song data exists
 	if(!SongData.IsEmpty())
 	{
 		MaxIndex = SongData.Num() - 1;
@@ -49,6 +54,7 @@ void USpawnerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Sets the song position
 	if(Owner)
 	{
 		SongPosition = Owner->GetLoaderSongPosition();
@@ -56,10 +62,11 @@ void USpawnerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(!SongData.IsEmpty())
 	{
+		// Spawns the correct note when at the song position
 		if(Index <= MaxIndex)
 		{
 			
-			if(SongData[Index].SongPosition <= SongPosition)
+			if(SongData[Index].SongPosition <= SongPosition) // == Equals will never get hit since using floats some of the positions get missed. 
 			{
 				FActorSpawnParameters Params;
 				Params.Owner = GetOwner();
@@ -67,7 +74,8 @@ void USpawnerActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 				FVector vec = trans.GetLocation();
 				vec.X = NoteLoaderActor->GetActorLocation().X;
 
-				if(SongData[Index].Row == 1)
+				// Sets the note to spawn in the correct row
+				if(SongData[Index].Row == 1) 
 				{
 					vec.Z = TopRow->GetComponentTransform().GetLocation().Z;
 				}

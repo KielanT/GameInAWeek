@@ -39,16 +39,22 @@ void ASpawnerActor::BeginPlay()
 void ASpawnerActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Only spawns if the game is playing
 	if(GameMode->IsPlaying())
 	{
 		GameTimer += DeltaTime;
 		SpawnerTime += DeltaTime;
+
+		// Spawns the actor at random spawn rates
 		if(SpawnerTime >= SpawnRate)
 		{
 			SpawnActor();
 			SpawnerTime = 0.0f; // Reset timer
 			SpawnRate = FMath::RandRange(SpawnRateMin, SpawnRateMax);
 		}
+
+		// Uses to speed up the spawning over time (not fully tested)
 		if(GameTimer >= GameTimerRate)
 		{
 			GameTimer = 0;
@@ -81,7 +87,7 @@ void ASpawnerActor::Tick(float DeltaTime)
 
 void ASpawnerActor::SpawnActor()
 {
-	if(Actor)
+	if(Actor) // Only spawns the actor if the class exists and sets the movement speed
 	{
 		FActorSpawnParameters params;
 		AFallingActor* ActorRef = GetWorld()->SpawnActor<AFallingActor>(Actor, SelectSpawnPoint(), params);
@@ -91,6 +97,7 @@ void ASpawnerActor::SpawnActor()
 
 FTransform ASpawnerActor::SelectSpawnPoint()
 {
+	// Selects a random spawn postion on the Z axis
 	FTransform Transform = GetTransform();
 	FVector NewLocation = Transform.GetLocation();
 	NewLocation.Z = FMath::RandRange(MinSpawn->GetComponentLocation().Z, MaxSpawn->GetComponentLocation().Z);

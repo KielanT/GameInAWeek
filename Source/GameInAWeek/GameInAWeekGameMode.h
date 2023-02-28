@@ -45,12 +45,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void Resume();
+
+	void GameOver();
 	
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	void GameOver();
+	
 	
 	void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
 	

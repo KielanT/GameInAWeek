@@ -41,6 +41,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		USceneComponent* MaxSpawn;
 
+	UPROPERTY(EditAnywhere)
+		float ObjectSpeed = 300.0f;
+	
 	UPROPERTY()
 		class AGameInAWeekGameMode* GameMode;
 	

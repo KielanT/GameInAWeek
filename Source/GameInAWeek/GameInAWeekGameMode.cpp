@@ -148,6 +148,7 @@ void AGameInAWeekGameMode::BeginPlay()
 
 void AGameInAWeekGameMode::GameOver()
 {
+	AudioComponent->Stop();
 	if(CurrentScore > HighScore)
 	{
 		HighScore = CurrentScore;
@@ -157,6 +158,7 @@ void AGameInAWeekGameMode::GameOver()
 			UGameplayStatics::AsyncSaveGameToSlot(SaveGame, SaveGame->SaveSlotName, SaveGame->UserIndex);
 		}
 	}
+
 
 	
 	ChangeWidget(GameOverClass);

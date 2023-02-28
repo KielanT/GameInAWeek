@@ -32,7 +32,7 @@ void ASpawnerActor::BeginPlay()
 	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	SpawnRateMin = 0.8f;
 	SpawnRateMax = 1.6f;
-	GameTimerRate = 15;
+	GameTimerRate = 25;
 }
 
 // Called every frame
@@ -85,7 +85,7 @@ void ASpawnerActor::SpawnActor()
 	{
 		FActorSpawnParameters params;
 		AFallingActor* ActorRef = GetWorld()->SpawnActor<AFallingActor>(Actor, SelectSpawnPoint(), params);
-		ActorRef->SetSpeed(400.0f);
+		ActorRef->SetSpeed(ObjectSpeed);
 	}
 }
 

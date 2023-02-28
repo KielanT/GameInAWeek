@@ -39,11 +39,18 @@ private:
 
 	void SpawnSword();
 
+	void DodgeRight();
+	void DodgeLeft();
+	void ResetDodge();
+
 public:
 	UPROPERTY(BlueprintReadOnly)
 		float ArmDeltaPitch;
 	
 private:
+	UPROPERTY(EditAnywhere)
+		USceneComponent* Root;
+	
 	UPROPERTY()
 		class AGameInAWeekGameMode* GameModeRef;
 	
@@ -56,7 +63,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 		class UInputAction* MoveHorizontalAction;
 	
-
 	UPROPERTY(EditAnywhere, Category = Input)
 		UInputAction* LungeAction;
 
@@ -66,6 +72,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input)
 		UInputAction* PauseAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+		UInputAction* DodgeRightAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+		UInputAction* DodgeLeftAction;
+	
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* CameraComponent;
 
@@ -81,13 +93,27 @@ private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<ASwordActor> SwordActorClass;
 
+	UPROPERTY(EditAnywhere)
+		float DodgeValue = 50.0f;
+	
 	UPROPERTY()
 		ASwordActor* SwordActor;
 
 	UPROPERTY()
 		FRotator StartingRotation;
 
+	UPROPERTY()
+		FVector StartPos;
+
+	UPROPERTY()
+		FTimerHandle DodgeTimerHandle;
+
+	UPROPERTY(EditAnywhere)
+		float DodgeTimer = 1.0f;
+	
 	bool bIsActive;
 
 	bool IsPaused;
+
+	
 };

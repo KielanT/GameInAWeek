@@ -27,24 +27,18 @@ void AFallingActor::BeginPlay()
 	Super::BeginPlay();
 
 	GameMode = Cast<AGameInAWeekGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(!BallMeshes.IsEmpty())
+	if(!ActorDatas.IsEmpty())
 	{
-		const int index = FMath::RandRange(0, BallMeshes.Num() - 1);
-		BallMesh = BallMeshes[index];
-		StaticMeshComponent->SetStaticMesh(BallMesh);
-		BallMeshes.Empty(); // Destroys the other meshes
+		const int index = FMath::RandRange(0, ActorDatas.Num() - 1);
+		ActorData = ActorDatas[index];
+		StaticMeshComponent->SetStaticMesh(ActorData.Mesh);
+		StaticMeshComponent->SetWorldScale3D(ActorData.Scale);
+		Score = ActorData.Score;
 
-		if(!Scores.IsEmpty())
-		{
-			Score = Scores[index];
-		}
-		else
-		{
-			Score = 10;
-		}
+		ActorDatas.Empty(); // Destroys the other meshes
 	}
 
-	StaticMeshComponent->SetStaticMesh(BallMesh);
+	//StaticMeshComponent->SetStaticMesh(BallMesh);
 	
 	StaticMeshComponent->SetEnableGravity(false);
 	
@@ -80,20 +74,31 @@ void AFallingActor::Hit()
 {
 	if(!IsMissed)
 	{
-		if(!AudioComponent->IsPlaying() && !HitSounds.IsEmpty())
+		if(ActorData.Type != EObjectType::Bomb)
 		{
-			const int Index = FMath::RandRange(0, HitSounds.Num() - 1);
-			USoundBase* Sound = HitSounds[Index];
-			AudioComponent->SetSound(Sound);
+			if(!AudioComponent->IsPlaying() && !HitSounds.IsEmpty())
+			{
+				const int Index = FMath::RandRange(0, HitSounds.Num() - 1);
+				USoundBase* Sound = HitSounds[Index];
+				AudioComponent->SetSound(Sound);
+				AudioComponent->Play();
+			}
+			if(!IsHit)
+			{
+				GameMode->IncreaseScore(Score);
+				GameMode->Missed(false);
+				StaticMeshComponent->SetEnableGravity(true);
+				StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
+			}
+		}
+		else
+		{
+			AudioComponent->SetSound(BombSound);
 			AudioComponent->Play();
+			GameMode->GameOver();
 		}
-		if(!IsHit)
-		{
-			GameMode->IncreaseScore(Score);
-			GameMode->Missed(false);
-			StaticMeshComponent->SetEnableGravity(true);
-			StaticMeshComponent->AddForce(FVector(1250.0f, 0.0f, 0.0f));
-		}
+
+		
 		
 		IsHit = true;
 		

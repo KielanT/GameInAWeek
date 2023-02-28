@@ -7,6 +7,35 @@
 
 #include "FallingActor.generated.h"
 
+UENUM(BlueprintType)
+enum class EObjectType : uint8
+{
+	Select = 0,
+	Ball,
+	Bomb
+};
+
+USTRUCT(BlueprintType)
+struct FActorData
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditAnywhere)
+		UStaticMesh* Mesh;
+
+	UPROPERTY(EditAnywhere)
+		EObjectType Type;
+
+	UPROPERTY(EditAnywhere)
+		int Score = 0;
+
+	UPROPERTY(EditAnywhere)
+		FVector Scale = FVector(1.0f, 1.0f, 1.0f);
+	
+	
+};
+
 class UBoxComponent;
 UCLASS()
 class GAMEINAWEEK_API AFallingActor : public AActor
@@ -53,15 +82,12 @@ private:
 
 	UPROPERTY()
 		float Speed = 0;
+	
+	UPROPERTY(EditAnywhere, Category = Data)
+		TArray<FActorData> ActorDatas;
 
-	UPROPERTY(EditAnywhere)
-		TArray<UStaticMesh*> BallMeshes;
-
-	UPROPERTY(EditAnywhere)
-		TArray<int> Scores; // The scores should match the meshes;
-
-	UPROPERTY(EditAnywhere)
-		UStaticMesh* BallMesh;
+	UPROPERTY()
+		FActorData ActorData;
 
 	UPROPERTY()
 		int Score;
@@ -83,9 +109,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Audio)
 		TArray<USoundBase*> HitSounds;
-
+	
 	UPROPERTY(EditAnywhere, Category = Audio)
 		USoundBase* MissedSound;
+
+	UPROPERTY(EditAnywhere, Category = Audio)
+		USoundBase* BombSound;
 	
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> DestructionMesh;

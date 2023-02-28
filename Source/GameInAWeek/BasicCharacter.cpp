@@ -17,11 +17,17 @@ ABasicCharacter::ABasicCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetupAttachment(Root);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CameraComponent->SetupAttachment(GetCapsuleComponent());
+	CameraComponent->SetupAttachment(CameraComponent);
+	
+	
 }
 
 // Called when the game starts or when spawned
@@ -75,6 +81,16 @@ void ABasicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 			if(PauseAction)
 			{
 				InputComp->BindAction(PauseAction, ETriggerEvent::Started, this, &ABasicCharacter::Pause);
+			}
+
+			if(DodgeLeftAction)
+			{
+				InputComp->BindAction(DodgeLeftAction, ETriggerEvent::Completed, this, &ABasicCharacter::DodgeLeft);
+			}
+
+			if(DodgeRightAction)
+			{
+				InputComp->BindAction(DodgeRightAction, ETriggerEvent::Completed, this, &ABasicCharacter::DodgeRight);
 			}
     	}
 
@@ -130,5 +146,28 @@ void ABasicCharacter::SpawnSword()
 		SwordActor = GetWorld()->SpawnActor<ASwordActor>(SwordActorClass, GetTransform(), Params);
 		SwordActor->AttachToComponent(GetMesh(), Rules, FName("WeaponSocket"));
 	}
+}
+
+void ABasicCharacter::DodgeRight()
+{
+	StartPos = GetActorLocation();
+	FVector loc = StartPos;
+	loc.Y = -DodgeValue;
+	SetActorLocation(loc);
+	GetWorld()->GetTimerManager().SetTimer(DodgeTimerHandle, this, &ABasicCharacter::ResetDodge, DodgeTimer, false);
+}
+
+void ABasicCharacter::DodgeLeft()
+{
+	StartPos = GetActorLocation();
+	FVector loc = StartPos;
+	loc.Y = DodgeValue;
+	SetActorLocation(loc);
+	GetWorld()->GetTimerManager().SetTimer(DodgeTimerHandle, this, &ABasicCharacter::ResetDodge, DodgeTimer, false);
+}
+
+void ABasicCharacter::ResetDodge()
+{
+	SetActorLocation(StartPos);
 }
 

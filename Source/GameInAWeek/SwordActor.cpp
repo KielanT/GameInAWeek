@@ -34,13 +34,6 @@ void ASwordActor::BeginPlay()
 		Key = GameInstance->SwordTypes;
 	}
 	SelectedMesh = *SwordMap.Find(Key);
-	//for(auto& sword : SwordMap)
-	//{
-	//	if(sword.Key == Key)
-	//	{
-	//		SelectedMesh = sword.Value;
-	//	}
-	//}
 
 	// Sets the sowrd mesh
 	if(SelectedMesh)
